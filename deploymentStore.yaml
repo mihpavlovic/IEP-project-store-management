@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+  storeDatabase:
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+    volumes:
+      - storeDrive:/var/lib/mysql
+    networks:
+      - mynet
+
+  storeDatabaseMigration:
+    image: storedatabasemigration
+    environment:
+      - DATABASE_URL=storeDatabase
+    depends_on:
+      storeDatabase:
+        condition: service_healthy
+    networks:
+      - mynet
+    build:
+      context: .
+      dockerfile: storeDatabaseMigration.dockerfile
+
+  owner:
+    image: owner
+    environment:
+      - DATABASE_URL=storeDatabase
+    networks:
+      - mynet
+    depends_on:
+      - storeDatabaseMigration
+    ports:
+      - 5001:5001
+    build:
+      context: .
+      dockerfile: owner.dockerfile
+
+  customer:
+    image: customer
+    environment:
+      - DATABASE_URL=storeDatabase
+    networks:
+      - mynet
+    depends_on:
+      - storeDatabaseMigration
+    ports:
+      - 5002:5002
+    build:
+      context: .
+      dockerfile: customer.dockerfile
+
+  courier:
+    image: courier
+    environment:
+      - DATABASE_URL=storeDatabase
+    networks:
+      - mynet
+    depends_on:
+      - storeDatabaseMigration
+    ports:
+      - 5003:5003
+    build:
+      context: .
+      dockerfile: courier.dockerfile
+
+
+volumes:
+  storeDrive:
+
+networks:
+  mynet:

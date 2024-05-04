@@ -1,0 +1,44 @@
+funkcije vlasnika
+
+/update                                                 level0
+    treba bearer access token, u telu sadrzi polje fajl sa csv datotekom
+    datoteka sadrzi imena kategorija, ime proizvoda i njegovu cenu
+    provera svega
+
+/product_statistics                                     level3
+    bearer access token, odgovor je niz json objekata, polja su name, sold i waiting (mora imati makar jednu prodaju)
+
+/category_statistics                                    level3
+    bearer access token, vraca niz kategorija sortirane opadajuci po broju dostavljenih primeraka
+    ako imaju dve isti broj dost primeraka sortirati rastuce po imenu
+
+
+
+
+funkcije kupaca
+
+/search?name=<PRODUCT_NAME>&category=<CATEGORY_NAME>    level0
+    oba parametra su opciona, bearer access token
+
+
+/order                                                  level1
+    bearer access token, niz proizvoda sa id i quantity, vraca se id narudzbine ako je uspesno
+
+/status                                                 level1
+    bearer access token, vraca orders i svaki order sadrzi proizvode, cenu, status, vreme
+    products sadrzi kategorije, cenu proizvoda kvantitet i ime
+
+/delivered                                              level2
+    bearer access token, prosledjuje mu se identifikator pristigle porudzbine, rezultat je promena stanja narudzbine
+
+
+
+
+funkcije kurira
+
+/orders_to_deliver                                      level2
+    bearer access token, rezultat zahteva je orders niz a elementi id i email, to su sve narudzbine koje treba dostaviti
+
+/pick_up_order                                          level2
+    bearer access token, telo je identifikator porudzbine koju kurir hoce da preuzme i dostavi kupcu,
+    rezultat je promena stanja promena stanja porudzbine
